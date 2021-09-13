@@ -151,7 +151,7 @@ class Brands extends React.Component {
     }
 
     getOptions = async () => {
-        const res = await fetch("/companies",{
+        const res = await fetch("https://shopping-cart-database.herokuapp.com/companies",{
             headers:{
                 "accepts":"application/json"
             }

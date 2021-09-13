@@ -126,7 +126,7 @@ class Home extends Component {
                 tagsFilter = tagsFilter + "&tags_like=" + tags[i];
             }
         }
-        const res = await fetch(`/items?${offsetFilter}&_sort=${SORTING_LIST[sortingId].sort}&_order=${SORTING_LIST[sortingId].order}${brandsFilter}${tagsFilter}&itemType=${productType}`,{
+        const res = await fetch(`https://shopping-cart-database.herokuapp.com/items?${offsetFilter}&_sort=${SORTING_LIST[sortingId].sort}&_order=${SORTING_LIST[sortingId].order}${brandsFilter}${tagsFilter}&itemType=${productType}`,{
             headers:{
                 "accepts":"application/json"
             }

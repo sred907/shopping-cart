@@ -147,7 +147,7 @@ class Tags extends React.Component {
     }
 
     getOptions = async () => {
-        const res = await fetch("/tags",{
+        const res = await fetch("https://shopping-cart-database.herokuapp.com/tags",{
             headers:{
                 "accepts":"application/json"
             }
