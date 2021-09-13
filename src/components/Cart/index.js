@@ -105,7 +105,7 @@ class Cart extends Component {
                         </li>
                     )
                 })
-            ):
+            ) :
             (
             <Text>Your Cart is empty!</Text>
             )
