@@ -139,7 +139,6 @@ const ListItem = styled.div`
 `;
 
 class Brands extends React.Component {
-
     constructor(props) {
         super(props);
         this.state = {
