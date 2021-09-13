@@ -132,15 +132,16 @@ class Home extends Component {
             }
         });
         let data = await res.json();
-        if (data.length) {
-            if (fetchNextData) {
-                data = [
-                    ...this.props.items,
-                    ...data
-                ];
-            }
-            this.props.addItems(data);
+        if (fetchNextData && !data.length) {
+            return;
         }
+        if (fetchNextData) {
+            data = [
+                ...this.props.items,
+                ...data
+            ];
+        }
+        this.props.addItems(data);
     }
 
     getFilters = () => {
@@ -177,12 +178,12 @@ class Home extends Component {
             <StyledRow>
                 <List offset={this.state.offset} items={this.props.items} addToCart={this.props.addToCart}/>
             </StyledRow>
-            <Pagination
+            {this.props.items.length ? <Pagination
                 count={Math.ceil(this.props.items.length / PAGE_LIMIT)}
                 marginPages={4}
                 pageRange={3}
                 pageChangeHandler={this.handlePageClick}
-            />
+            /> : null}
             </>
         );
     }
@@ -193,12 +194,12 @@ class Home extends Component {
             <StyledRow>
                 <List offset={this.state.offset} items={this.props.items} addToCart={this.props.addToCart}/>
             </StyledRow>
-            <Pagination
+            {this.props.items.length ? <Pagination
                 count={Math.ceil(this.props.items.length / PAGE_LIMIT)}
                 marginPages={3}
                 pageRange={1}
                 pageChangeHandler={this.handlePageClick}
-            />
+            /> : null}
             </>
         );
     }

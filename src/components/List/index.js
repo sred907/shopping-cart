@@ -80,6 +80,11 @@ const Card = styled.div`
     }
 `;
 
+const EmptyCol = styled(Col) `
+    text-align: center;
+    padding: 100px;
+`;
+
 const FlexUnsetCol = styled(Col)`
     flex-grow: unset !important;
 
@@ -97,9 +102,7 @@ const List = (props) => {
     }
     if (!itemList.length) {
         return (
-            <Row>
-                <Col>No Products to show!</Col>
-            </Row>
+            <EmptyCol>No Products to show!</EmptyCol>
         );
     }
     return (
@@ -114,7 +117,7 @@ const List = (props) => {
                                     <FlexUnsetCol key={item.id}>
                                         <Card>
                                             <div className="card-image">
-                                                <div className="image"></div>
+                                                <img src="https://via.placeholder.com/92" alt="placeholder"/>
                                             </div>
                                             <div className="card-content">
                                                 <div className="price">₺ {item.price}</div>
