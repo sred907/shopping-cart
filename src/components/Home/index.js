@@ -63,11 +63,13 @@ class Home extends Component {
         this.state = {
             isOpen: false,
             offset: 1,
-            noOfPages: 20
+            noOfPages: 20,
+            loading: false
         };
     }
 
     componentDidMount() {
+        this.setState({loading: true});
         this.loadItemsFromServer(0, false);
     }
 
@@ -82,6 +84,7 @@ class Home extends Component {
         let currTags = this.props.tags;
 
         if ((!isEqual(prevSort, currSort)) || (!isEqual(prevProdType, currProdType)) || (!isEqual(prevBrands, currBrands)) || (!isEqual(prevTags, currTags))) {
+            this.setState({loading: true});
             if (this.state.offset !== 1) {
                 this.setState({
                     offset: 1
@@ -103,6 +106,7 @@ class Home extends Component {
              offset: selected
             }, () => {
                 if (selected >= Math.ceil(this.props.items.length / PAGE_LIMIT)) {
+                    this.setState({loading: true});
                     this.loadItemsFromServer(selected, fetchNextData);
                 }
         });
@@ -132,6 +136,7 @@ class Home extends Component {
             }
         });
         let data = await res.json();
+        this.setState({loading: false});
         if (fetchNextData && !data.length) {
             return;
         }
@@ -176,7 +181,7 @@ class Home extends Component {
             <>
             <ProductTypes />
             <StyledRow>
-                <List offset={this.state.offset} items={this.props.items} addToCart={this.props.addToCart}/>
+                <List offset={this.state.offset} items={this.props.items} addToCart={this.props.addToCart} loading={this.state.loading}/>
             </StyledRow>
             {this.props.items.length ? <Pagination
                 count={Math.ceil(this.props.items.length / PAGE_LIMIT)}
@@ -192,7 +197,7 @@ class Home extends Component {
         return (
             <>
             <StyledRow>
-                <List offset={this.state.offset} items={this.props.items} addToCart={this.props.addToCart}/>
+                <List offset={this.state.offset} items={this.props.items} addToCart={this.props.addToCart} loading={this.state.loading}/>
             </StyledRow>
             {this.props.items.length ? <Pagination
                 count={Math.ceil(this.props.items.length / PAGE_LIMIT)}

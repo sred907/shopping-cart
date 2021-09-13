@@ -5,6 +5,8 @@ import { Row, Col, Button } from '@bootstrap-styled/v4';
 
 import { addToCart } from '../../actions/cartActions';
 
+import Freeze from "../Freeze";
+
 const CardsContainer = styled.div`
     padding: 24px 15px;
     background: #fff;
@@ -78,6 +80,18 @@ const Card = styled.div`
             color: #1EA4CE;
         }
     }
+
+    @media(max-width: 1620px) {
+        width: 112px;
+    }
+
+    @media(max-width: 1425px) {
+        width: 110px;
+    }
+
+    @media(max-width: 1199px) {
+        width: 136px;
+    }
 `;
 
 const EmptyCol = styled(Col) `
@@ -99,6 +113,11 @@ const List = (props) => {
     let itemList = [], size = 4;
     for (let i = 0; i < newItems.length; i += size) {
         itemList.push(newItems.slice(i, i + size));
+    }
+    if (props.loading) {
+        return (
+            <Freeze />
+        );
     }
     if (!itemList.length) {
         return (
