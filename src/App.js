@@ -9,10 +9,9 @@ class App extends Component {
        <BrowserRouter>
             <div className="App">
               <Navbar/>
-                <Switch>
-                    <Route exact path="/" component={Home}/>
-                    <Route path="/:pageNumber" component={Home}/>
-                </Switch>
+              <Switch>
+                  <Route exact path="/" component={Home}/>
+              </Switch>
              </div>
        </BrowserRouter>
       

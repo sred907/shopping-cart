@@ -1,11 +1,15 @@
 
-import { ADD_TO_CART, REMOVE_ITEM, SUB_QUANTITY, ADD_QUANTITY, ADD_ITEMS } from '../actions/action-types/cart-actions'
+import { ADD_TO_CART, SUB_QUANTITY, ADD_QUANTITY, ADD_ITEMS, SET_SORTING_ID, SET_PRODUCT_TYPE, SET_BRANDS, SET_TAGS } from '../actions/actionTypes';
 
 
 const initState = {
     items: [],
     addedItems:[],
-    total: 0
+    total: 0,
+    sortingId: 0,
+    productType: "mug",
+    brands: ["All"],
+    tags: ["All"]
 
 }
 
@@ -16,7 +20,7 @@ const cartReducer= (state = initState, action)=>{
             items: [...action.data]
         }
     }
-   
+
     if(action.type === ADD_TO_CART){
           let addedItem = state.items.find(item=> item.id === action.id)
           //check if the action id exists in the addedItems
@@ -24,10 +28,10 @@ const cartReducer= (state = initState, action)=>{
          if(existed_item)
          {
             addedItem.quantity += 1 
-             return{
+             return {
                 ...state,
                  total: state.total + addedItem.price 
-                  }
+            }
         }
          else{
             addedItem.quantity = 1;
@@ -42,28 +46,17 @@ const cartReducer= (state = initState, action)=>{
             
         }
     }
-    if(action.type === REMOVE_ITEM){
-        let itemToRemove= state.addedItems.find(item=> action.id === item.id)
-        let new_items = state.addedItems.filter(item=> action.id !== item.id)
-        
-        //calculating the total
-        let newTotal = state.total - (itemToRemove.price * itemToRemove.quantity )
-        console.log(itemToRemove)
-        return{
-            ...state,
-            addedItems: new_items,
-            total: newTotal
-        }
-    }
-    if(action.type === ADD_QUANTITY){
-        let addedItem = state.items.find(item => item.id === action.id);
-        addedItem.quantity += 1 ;
-        let newTotal = state.total + addedItem.price;
+
+    if(action.type=== ADD_QUANTITY){
+        let addedItem = state.items.find(item=> item.id === action.id)
+          addedItem.quantity += 1 
+          let newTotal = state.total + addedItem.price
           return{
               ...state,
               total: newTotal
           }
     }
+
     if(action.type === SUB_QUANTITY){  
         let addedItem = state.items.find(item => item.id === action.id) 
         //if the qt == 0 then it should be removed
@@ -86,6 +79,37 @@ const cartReducer= (state = initState, action)=>{
         }
         
     }
+
+    if(action.type === SET_SORTING_ID) {
+        return {
+            ...state,
+            sortingId: action.id
+        }
+    }
+
+    if(action.type === SET_PRODUCT_TYPE) {
+        return {
+            ...state,
+            productType: action.product
+        }
+    }
+
+    if(action.type === SET_BRANDS) {
+        let newBrands = action.brands.slice(0);
+        return {
+            ...state,
+            brands: newBrands
+        }
+    }
+
+    if(action.type === SET_TAGS) {
+        let newTags = action.tags.slice(0);
+        return {
+            ...state,
+            tags: newTags
+        }
+    }
+
     return state;
 }
 

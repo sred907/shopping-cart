@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { Row, Col } from '@bootstrap-styled/v4';
 
-import { removeItem,addQuantity,subtractQuantity} from '../../actions/cartActions';
+import { addQuantity, subtractQuantity} from '../../actions/cartActions';
 
 const CartContainer = styled.div`
     padding: 0;
@@ -75,31 +75,18 @@ const Total = styled.div`
 `;
 
 class Cart extends Component {
-    //to remove the item completely
-    handleRemove = (id)=>{
-        this.props.removeItem(id);
-    }
-    //to add the quantity
-    handleAddQuantity = (id)=>{
-        this.props.addQuantity(id);
-    }
-    //to substruct from the quantity
-    handleSubtractQuantity = (id)=>{
-        this.props.subtractQuantity(id);
-    }
-
     getListItem = (item) => {
         return (
             <List key={item.id}>
                 <Row style={{borderBottom: "1px solid #F4F4F4", paddingBottom: "15px"}}>
                     <Col xs="7">
-                        <Title>{item.title}</Title>
+                        <Title>{item.name}</Title>
                         <Price>₺ {item.price}</Price>
                     </Col>
                     <Col xs="5">
-                        <Quantifier onClick={()=>{this.handleSubtractQuantity(item.id)}}>&#8722;</Quantifier>
+                        <Quantifier onClick={()=>{this.props.subtractQuantity(item.id)}}>&#8722;</Quantifier>
                         <Quantity>{item.quantity}</Quantity>
-                        <Quantifier onClick={()=>{this.handleAddQuantity(item.id)}}>&#43;</Quantifier>
+                        <Quantifier onClick={()=>{this.props.addQuantity(item.id)}}>&#43;</Quantifier>
                     </Col>
                 </Row>
             </List>
@@ -109,9 +96,9 @@ class Cart extends Component {
     render(){
         let addedItems = this.props.items.length ?
             (
-                this.props.items.map(item=>{
+                this.props.items.map((item, i)=>{
                     return(
-                        <li key={item.id} style={{listStyle: "none"}}>
+                        <li key={i} style={{listStyle: "none"}}>
                             {
                                 this.getListItem(item)
                             }
@@ -129,7 +116,7 @@ class Cart extends Component {
                     <Row>
                         <Col md="6"></Col>
                         <Col md="6">
-                            <Total>₺ {this.props.total}</Total>
+                            <Total>₺ {Math.round(this.props.total * 100)/100}</Total>
                         </Col>
                     </Row> : null
                 }
@@ -145,7 +132,6 @@ const mapStateToProps = (state)=>{
 }
 const mapDispatchToProps = (dispatch)=>{
     return{
-        removeItem: (id)=>{dispatch(removeItem(id))},
         addQuantity: (id)=>{dispatch(addQuantity(id))},
         subtractQuantity: (id)=>{dispatch(subtractQuantity(id))}
     }

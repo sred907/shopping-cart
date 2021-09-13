@@ -2,12 +2,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 
-const SORTING_LIST = [
-    "Price low to high",
-    "Price high to low",
-    "New to old",
-    "Old to new"
-];
+import { setSortingId } from '../../actions/cartActions'
+import { SORTING_LIST } from "../../constants";
 
 const SortingContainer = styled.div`
     background: #FFFFFF;
@@ -97,61 +93,45 @@ const ListItem = styled.div`
       }
 `;
 
-class Sorting extends React.Component {
-
-    constructor(props) {
-        super(props);
-        this.state = {
-            selected: 0
-        }
-    }
-
-    setSelected = (id) => {
-        this.setState({
-            selected: id
-        });
-    }
-
-    render() {
-        return (
-            <div>
-                <Heading>Sorting</Heading>
-                <SortingContainer>
-                    {
-                        SORTING_LIST.map((item, i) => {
-                            return (
-                                <ListItem key={i}>
-                                    <label className="container">
-                                        {item}
-                                        <input
-                                        type="checkbox"
-                                        checked={this.state.selected === i ? "checked" : false}
-                                        onChange={(e) => {
-                                            this.setSelected(i);
-                                        }}
-                                        />
-                                        <span className="checkmark"></span>
-                                    </label>
-                                </ListItem>
-                            );
-                        })
-                    }
-                </SortingContainer>
-            </div>
-        );
-    }
+const Sorting = (props) => {
+    return (
+        <div>
+            <Heading>Sorting</Heading>
+            <SortingContainer>
+                {
+                    SORTING_LIST.map((item, i) => {
+                        return (
+                            <ListItem key={i}>
+                                <label className="container">
+                                    {item.label}
+                                    <input
+                                    type="checkbox"
+                                    checked={props.sortingId === i ? "checked" : false}
+                                    onChange={(e) => {
+                                        props.setSortingId(i);
+                                    }}
+                                    />
+                                    <span className="checkmark"></span>
+                                </label>
+                            </ListItem>
+                        );
+                    })
+                }
+            </SortingContainer>
+        </div>
+    );
 }
 
 const mapStateToProps = (state)=>{
     return {
-        items: state.items
+        sortingId: state.sortingId
     }
 }
 
-// const mapDispatchToProps= (dispatch)=>{
-//     return{
-//         addToCart: (id)=>{dispatch(addToCart(id))}
-//     }
-// }
+const mapDispatchToProps= (dispatch)=>{
+    return{
+        setSortingId: (id) => { dispatch(setSortingId(id)) }
+    }
+}
 
-export default connect(mapStateToProps)(Sorting);
+export default connect(mapStateToProps, mapDispatchToProps)(Sorting);

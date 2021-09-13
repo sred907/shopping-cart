@@ -2,6 +2,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 
+import { setBrands } from "../../actions/cartActions";
+
 const BrandsContainer = styled.div`
     background: #FFFFFF;
     box-shadow: 0px 6px 24px rgba(93, 62, 188, 0.04);
@@ -105,6 +107,10 @@ const ListItem = styled.div`
         background-color: #ccc;
     }
 
+    input[type="checkbox"]:checked {
+        background: red;
+    }
+
     input:checked ~ .checkmark {
         background-color: #2196F3;
         color: #fff;
@@ -137,8 +143,7 @@ class Brands extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            options: [],
-            checkedState: []
+            options: []
         }
     }
 
@@ -153,34 +158,58 @@ class Brands extends React.Component {
             }
         });
         const data = await res.json();
+        this.options = [
+            {
+                "slug": "All",
+                "name": "All",
+            },
+            ...data
+        ];
         this.setState({
-            options: [
-                {
-                    "slug": "All",
-                    "name": "All",
-                },
-                ...data
-            ],
-            checkedState: new Array(data.length).fill(false)
+            options: [...this.options]
         });
 
     }
 
-    handleChange = (position) => {
-        const { options, checkedState } = this.state;
-        if (position === 0) {
-            this.setState({checkedState: new Array(options.length).fill(true)});
+    updateChecks = (index) => {
+        const { options } = this.state;
+        const { brands } = this.props;
+        let arr = [...brands];
+        if (index === 0) {
+            arr = brands[0] === "All" ? [] : ["All"]
         } else {
-            const updatedCheckedState = checkedState.map((item, index) =>
-                index === position ? !item : item
-            );
+            if(arr.indexOf("All") > -1) arr.splice(arr.indexOf("All"), 1);
+            if (arr.indexOf(options[index].slug) > -1) {
+                arr.splice(arr.indexOf(options[index].slug), 1);
+            } else {
+                arr.push(options[index].slug);
+            }
+        }
+        this.props.setBrands(arr);
+    }
 
-            this.setState({checkedState: updatedCheckedState});
+    updateResult = (event) => {
+        let { value } = event.target;
+        let arr = [];
+        arr = this.options.filter((option) => {
+            return (option.name.toLowerCase()).indexOf(value.toLowerCase()) > -1
+        });
+        this.setState({
+            options: arr.length ? [...arr] : [...this.options]
+        })
+    }
+
+    getStatus = (option) => {
+        const { brands } = this.props;
+        if (brands.indexOf(option.slug) > -1) {
+            return "checked";
+        } else {
+            return "";
         }
     }
 
     render() {
-        const { options, checkedState } = this.state;
+        const { options } = this.state;
         return (
             <div>
                 <Heading>Brands</Heading>
@@ -188,23 +217,23 @@ class Brands extends React.Component {
                     <input
                         placeholder="Search Brand"
                         className="searchBox"
+                        onChange={(e) => this.updateResult(e)}
                     />
                     <ListContainer>
                         {
                             options.map((option, i) => {
                                 return (
                                     <ListItem key={i}>
-                                        <label htmlFor={`custom-checkbox-${i}`}>
+                                        <label>
                                             {option.name}
                                             <input
-                                            type="checkbox"
-                                            id={`custom-checkbox-${i}`}
-                                            onChange={(e) => {
-                                                this.handleChange(i);
-                                            }}
-                                            checked={checkedState[i]}
-                                            name={option.name}
-                                            value={option.slug}
+                                                type="checkbox"
+                                                onChange={(e) => {
+                                                    this.updateChecks(i);
+                                                }}
+                                                checked={this.getStatus(option)}
+                                                name={option.name}
+                                                value={option.slug}
                                             />
                                             <span className="checkmark"></span>
                                         </label>
@@ -221,14 +250,14 @@ class Brands extends React.Component {
 
 const mapStateToProps = (state)=>{
     return {
-        items: state.items
+        brands: state.brands
     }
 }
 
-// const mapDispatchToProps= (dispatch)=>{
-//     return{
-//         addToCart: (id)=>{dispatch(addToCart(id))}
-//     }
-// }
+const mapDispatchToProps= (dispatch)=>{
+    return{
+        setBrands: (brands)=>{dispatch(setBrands(brands))}
+    }
+}
 
-export default connect(mapStateToProps)(Brands);
+export default connect(mapStateToProps, mapDispatchToProps)(Brands);

@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 
-import { addItems } from '../../actions/cartActions';
+import { setTags } from '../../actions/cartActions';
 
 const TagsContainer = styled.div`
     background: #FFFFFF;
@@ -139,8 +139,7 @@ class Tags extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            tags: [],
-            checkedStateTags: []
+            options: []
         }
     }
 
@@ -149,43 +148,60 @@ class Tags extends React.Component {
     }
 
     getOptions = async () => {
-        const res = await fetch("/items",{
+        const res = await fetch("/tags",{
             headers:{
                 "accepts":"application/json"
             }
         });
         let data = await res.json();
-        this.props.addItems(data);
-        data = this.filterTags(data);
+        this.options = [
+            "All",
+            ...data
+        ];
         this.setState({
-            tags: [
-                "All",
-                ...data
-            ],
-            checkedStateTags: new Array(data.length).fill(false)
+            options: [...this.options]
         });
     }
 
-    filterTags = (data) => {
-        let items = data.flatMap((el) => el.tags);
-        return [...new Set(items)].sort();
+    updateChecks = (index) => {
+        const { options } = this.state;
+        const { tags } = this.props;
+        let arr = [...tags];
+        if (index === 0) {
+            arr = tags[0] === "All" ? [] : ["All"];
+        } else {
+            if(arr.indexOf("All") > -1) arr.splice(arr.indexOf("All"), 1);
+            if (arr.indexOf(options[index]) > -1) {
+                arr.splice(arr.indexOf(options[index]), 1);
+            } else {
+                arr.push(options[index]);
+            }
+        }
+        this.props.setTags(arr);
     }
 
-    handleTagChange = (position) => {
-        const { tags, checkedStateTags } = this.state;
-        if (position === 0) {
-            this.setState({checkedStateTags: new Array(tags.length).fill(true)});
-        } else {
-            const updatedCheckedStateTags = checkedStateTags.map((item, index) =>
-                index === position ? !item : item
-            );
+    updateResult = (event) => {
+        let { value } = event.target;
+        let arr = [];
+        arr = this.options.filter((option) => {
+            return (option.toLowerCase()).indexOf(value.toLowerCase()) > -1
+        });
+        this.setState({
+            options: arr.length ? [...arr] : [...this.options]
+        })
+    }
 
-            this.setState({checkedStateTags: updatedCheckedStateTags});
+    getStatus = (tag) => {
+        const { tags } = this.props;
+        if (tags.indexOf(tag) > -1) {
+            return "checked";
+        } else {
+            return "";
         }
     }
 
     render() {
-        const { tags, checkedStateTags } = this.state;
+        const { options } = this.state;
         return (
             <div>
                 <Heading>Tags</Heading>
@@ -193,21 +209,21 @@ class Tags extends React.Component {
                     <input
                         placeholder="Search Tag"
                         className="searchBox"
+                        onChange={(e) => this.updateResult(e)}
                     />
                     <ListContainer>
                         {
-                            tags.map((tag, i) => {
+                            options.map((tag, i) => {
                                 return (
                                     <ListItem key={i}>
-                                        <label htmlFor={`custom-checkbox-${i}`}>
+                                        <label>
                                             {tag}
                                             <input
                                             type="checkbox"
-                                            id={`custom-checkbox-${i}`}
                                             onChange={(e) => {
-                                                this.handleTagChange(i);
+                                                this.updateChecks(i);
                                             }}
-                                            checked={checkedStateTags[i]}
+                                            checked={this.getStatus(tag)}
                                             name={tag}
                                             value={tag}
                                             />
@@ -226,13 +242,13 @@ class Tags extends React.Component {
 
 const mapStateToProps = (state)=>{
     return {
-        items: state.items
+        tags: state.tags
     }
 }
 
 const mapDispatchToProps= (dispatch)=>{
     return{
-        addItems: (data)=>{dispatch(addItems(data))}
+        setTags: (tags)=>{dispatch(setTags(tags))}
     }
 }
 

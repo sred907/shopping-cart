@@ -11,6 +11,10 @@ const StyledContainer = styled.div`
     display: block;
     z-index: 12;
     margin-bottom: 40px;
+
+    @media(max-width: 1199px) {
+        margin-bottom: 10px;
+    }
 `;
 
 const Total = styled.div`
@@ -51,6 +55,22 @@ const MobileCol = styled(Col)`
     }
 `;
 
+const Market = styled.div`
+    text-align: center;
+    line-height: 76px;
+    font-size: 50px;
+    color: #fff;
+
+    @media(max-width: 1199px) {
+        text-align: center;
+        line-height: 75px;
+        font-size: 50px;
+        color: #fff;
+        width: 50%;
+        display: inline-block;
+    }
+`;
+
 class Navbar extends React.Component {
     constructor(props) {
         super(props);
@@ -66,18 +86,21 @@ class Navbar extends React.Component {
             <StyledContainer>
                 <RowWithMargin>
                     <WebCol md="3"></WebCol>
-                    <WebCol md="5"></WebCol>
+                    <WebCol md="5">
+                        <Market>Market</Market>
+                    </WebCol>
                     <WebCol md="4">
-                        <Total>{this.props.total ? `₺ ${this.props.total}` : "₺ 0,00"}</Total>
+                        <Total>{this.props.total ? `₺ ${Math.round(this.props.total * 100)/100}` : "₺ 0,00"}</Total>
                     </WebCol>
                     <MobileCol sm="12">
-                        <Total onClick={() => this.handleClose()}>{this.props.total ? `₺ ${this.props.total}` : "₺ 0,00"}</Total>
+                        <Market>Market</Market>
+                        <Total onClick={() => this.handleClose()}>{this.props.total ? `₺ ${Math.round(this.props.total * 100)/100}` : "₺ 0,00"}</Total>
                         <Modal isOpen={this.state.isOpen} toggle={() => this.handleClose()}>
                             <ModalBody>
                                 <Cart />
                             </ModalBody>
                             <ModalFooter>
-                                <Button color="secondary" onClick={() => this.handleClose()}>Close</Button>
+                                <Button color="secondary" onClick={() => this.handleClose()}>Apply</Button>
                             </ModalFooter>
                         </Modal>
                     </MobileCol>

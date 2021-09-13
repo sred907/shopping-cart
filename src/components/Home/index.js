@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import {isEqual} from "lodash";
 import styled from 'styled-components';
 import { Row, Col, Modal, ModalBody, ModalFooter, Button } from '@bootstrap-styled/v4';
 
@@ -8,110 +9,11 @@ import Sorting from "../Sorting";
 import Brands from "../Brands";
 import Tags from "../Tags";
 import Pagination from "../Pagination";
+import ProductTypes from "../ProductTypes";
+import List from "../List";
 
-import { addToCart } from '../../actions/cartActions'
-
-const ITEM_TYPES = ["mug", "shirt"];
-
-const CardsContainer = styled.div`
-    padding: 24px 15px;
-    background: #fff;
-    box-shadow: 0px 4px 24px rgba(93, 62, 188, 0.04);
-    border-radius: 2px;
-    margin: 0 auto;
-`;
-
-const Card = styled.div`
-    margin-bottom: 24px;
-
-    .card-content {
-        min-height: 100px;
-        position: relative;
-    }
-
-    .card-image {
-        padding: 16px;
-        background: #FEFEFE;
-        border: 1.17666px solid #F3F0FE;
-        border-radius: 12px;
-        width: 124px;
-        margin-bottom: 8px;
-
-        .image {
-            width: 92px;
-            height: 92px;
-            background: #C4C4C4;
-        }
-    }
-
-    .price {
-        font-size: 14px;
-        font-style: normal;
-        font-weight: 700;
-        line-height: 20px;
-        letter-spacing: 0px;
-        text-align: left;
-        margin-bottom: 8px;
-        color: #1EA4CE;
-
-    }
-
-    .card-title {
-        font-size: 14px;
-        font-style: normal;
-        font-weight: 600;
-        line-height: 20px;
-        letter-spacing: 0px;
-        text-align: left;
-        margin-bottom: 8px;
-    }
-
-    .add {
-        width: 124px;
-        height: 22px;
-        background: #1EA4CE;
-        border-radius: 2px;
-        font-style: normal;
-        font-weight: 600;
-        font-size: 12px;
-        line-height: 5px;
-        color: #FFFFFF;
-        margin-bottom: 8px;
-        border: 1px solid #1ea4ce;
-        position: absolute;
-        bottom: 0;
-
-        &:hover {
-            background: #fff;
-            color: #1EA4CE;
-        }
-    }
-`;
-
-const Heading = styled.div`
-    font-size: 20px;
-    line-height: 26px;
-    display: flex;
-    align-items: center;
-    letter-spacing: 0.25px;
-    color: #6F6F6F;
-`;
-
-const ProductType = styled.div`
-    padding: 6px 16px;
-    width: 61px;
-    background: #F2F0FD;
-    border-radius: 2px;
-    border: 1px solid #1EA4CE;
-    color: #1EA4CE;
-    margin: 16px 8px 16px 0;
-    cursor: pointer;
-
-    &.selected {
-        background: #1EA4CE;
-        color: #fff;
-    }
-`;
+import { addItems } from '../../actions/cartActions'
+import { SORTING_LIST, PAGE_LIMIT } from "../../constants";
 
 const StyledRow = styled(Row)`
     background: #fff;
@@ -159,143 +61,159 @@ class Home extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            selectedItem: "mug",
-            isOpen: false
+            isOpen: false,
+            offset: 1,
+            noOfPages: 20
         };
     }
 
-    handleClick = (id)=>{
-        this.props.addToCart(id); 
+    componentDidMount() {
+        this.loadItemsFromServer(0, false);
     }
 
-    getModifiedList = (items) => {
-        let arrays = [], size = 4;
+    componentDidUpdate(prevProps) {
+        let prevSort = prevProps.sortingId;
+        let currSort = this.props.sortingId;
+        let prevProdType = prevProps.productType;
+        let currProdType = this.props.productType;
+        let prevBrands = prevProps.brands;
+        let currBrands = this.props.brands;
+        let prevTags = prevProps.tags;
+        let currTags = this.props.tags;
 
-        for (let i = 0; i < items.length; i += size) {
-            arrays.push(items.slice(i, i + size));
+        if ((!isEqual(prevSort, currSort)) || (!isEqual(prevProdType, currProdType)) || (!isEqual(prevBrands, currBrands)) || (!isEqual(prevTags, currTags))) {
+            if (this.state.offset !== 1) {
+                this.setState({
+                    offset: 1
+                })
+            }
+            this.loadItemsFromServer(0, false);
         }
-
-        return arrays;
-    }
-
-    handleProductType = (item) => {
-        this.setState({
-            selectedItem: item
-        });
-    }
-
-    getItemList = () => {
-        let currentPage = this.props.match.params.pageNumber ? parseInt(this.props.match.params.pageNumber) : 1;
-        const startIndex = (currentPage - 1) * 16;
-        let newItems = this.props.items.slice(startIndex, startIndex + 16);
-        this.items = this.getModifiedList(newItems);
-
-        let itemList = this.items.map((list, i) => {
-            return (
-                <Row key={i}>
-                    {
-                        list.map((item) => {
-                            return (
-                                <Col key={item.id}>
-                                    <Card>
-                                        <div className="card-image">
-                                            <div className="image"></div>
-                                        </div>
-                                        <div className="card-content">
-                                            <div className="price">₺ {item.price}</div>
-                                            <div className="card-title">{item.name}</div>
-                                            <Button color="primary" onClick={()=>{this.handleClick(item.id)}} className="add">Add</Button>
-                                        </div>
-                                    </Card>
-                                </Col>
-                            );
-                        })
-                    }
-                </Row>
-            );
-        });
-
-        return itemList;
     }
 
     handleClose = () => this.setState({ isOpen: !this.state.isOpen });
 
+    handlePageClick = (data) => {
+        let selected = data.selected + 1;
+        let fetchNextData = false;
+        if (selected === Math.ceil(this.props.items.length / PAGE_LIMIT)) {
+            fetchNextData = true;
+        }
+        this.setState({
+             offset: selected
+            }, () => {
+                if (selected >= Math.ceil(this.props.items.length / PAGE_LIMIT)) {
+                    this.loadItemsFromServer(selected, fetchNextData);
+                }
+        });
+    }
+
+    loadItemsFromServer = async (offset, fetchNextData = false) => {
+        const {noOfPages} = this.state;
+        const { sortingId, brands, productType, tags } = this.props;
+        // let pageFilter = `_page=${offset}`;
+        let offsetFilter = `_start=${(offset) * PAGE_LIMIT}&_end=${(offset + noOfPages) * PAGE_LIMIT}`;
+        let brandsFilter = "";
+        let tagsFilter = "";
+        // let limitFilter = `&_limit=${20 * 16}`;
+        if (brands.length && brands[0] !== "All") {
+            for (let i = 0; i < brands.length; i++) {
+                brandsFilter = brandsFilter + "&manufacturer=" + brands[i];
+            }
+        }
+        if (tags.length && tags[0] !== "All") {
+            for (let i = 0; i < tags.length; i++) {
+                tagsFilter = tagsFilter + "&tags_like=" + tags[i];
+            }
+        }
+        const res = await fetch(`/items?${offsetFilter}&_sort=${SORTING_LIST[sortingId].sort}&_order=${SORTING_LIST[sortingId].order}${brandsFilter}${tagsFilter}&itemType=${productType}`,{
+            headers:{
+                "accepts":"application/json"
+            }
+        });
+        let data = await res.json();
+        if (data.length) {
+            if (fetchNextData) {
+                data = [
+                    ...this.props.items,
+                    ...data
+                ];
+            }
+            this.props.addItems(data);
+        }
+    }
+
+    getFilters = () => {
+        return (
+            <>
+                <Sorting />
+                <Brands />
+                <Tags />
+            </>
+        );
+    }
+
+    getFilterModal = () => {
+        return (
+            <>
+            <Filter onClick={() => this.handleClose()}>Filters</Filter>
+            <Modal isOpen={this.state.isOpen} toggle={() => this.handleClose()}>
+                <ModalBody>
+                    <ProductTypes />
+                    {this.getFilters()}
+                </ModalBody>
+                <ModalFooter>
+                    <Button color="secondary" onClick={() => this.handleClose()}>Apply</Button>
+                </ModalFooter>
+            </Modal>
+            </>
+        );
+    }
+
+    getWebProductContent = () => {
+        return (
+            <>
+            <ProductTypes />
+            <StyledRow>
+                <List offset={this.state.offset} items={this.props.items} addToCart={this.props.addToCart}/>
+            </StyledRow>
+            <Pagination
+                count={Math.ceil(this.props.items.length / PAGE_LIMIT)}
+                marginPages={4}
+                pageRange={3}
+                pageChangeHandler={this.handlePageClick}
+            />
+            </>
+        );
+    }
+
+    getMobProductContent = () => {
+        return (
+            <>
+            <StyledRow>
+                <List offset={this.state.offset} items={this.props.items} addToCart={this.props.addToCart}/>
+            </StyledRow>
+            <Pagination
+                count={Math.ceil(this.props.items.length / PAGE_LIMIT)}
+                marginPages={3}
+                pageRange={1}
+                pageChangeHandler={this.handlePageClick}
+            />
+            </>
+        );
+    }
+
     render(){
-        let { selectedItem } = this.state;
-        let currentPage = this.props.match.params.pageNumber ? parseInt(this.props.match.params.pageNumber) : 1;
         return (
             <RowWithMargin className="margin120">
-                <WebCol md="3">
-                    <Sorting />
-                    <Brands />
-                    <Tags />
-                </WebCol>
-                <WebCol md="6" sm="12">
-                    <Row>
-                        <Heading>Products</Heading>
-                    </Row>
-                    <Row>
-                        {
-                            ITEM_TYPES.map((item, i) => {
-                                return (
-                                    <ProductType key={i} className={selectedItem === item ? "selected" : ""} onClick={()=>{this.handleProductType(item)}}>
-                                        {item}
-                                    </ProductType>
-                                );
-                            })
-                        }
-                    </Row>
-                    <StyledRow>
-                        <CardsContainer>{this.getItemList()}</CardsContainer>
-                    </StyledRow>
-                    <Row>
-                        <Pagination
-                            basePath="/"
-                            currentPage={currentPage}
-                            totalPageNum={Math.ceil(this.props.items.length / 16)}
-                            pageSize={16} 
-                        />
-                    </Row>
-                </WebCol>
-                <WebCol md="3">
-                    <Cart />
-                </WebCol>
-                <MobileCol sm="12">
-                        <Filter onClick={() => this.handleClose()}>Filters</Filter>
-                        <Modal isOpen={this.state.isOpen} toggle={() => this.handleClose()}>
-                            <ModalBody>
-                                <Heading>Products</Heading>
-                                {
-                                    ITEM_TYPES.map((item, i) => {
-                                        return (
-                                            <ProductType key={i} className={selectedItem === item ? "selected" : ""} onClick={()=>{this.handleProductType(item)}}>
-                                                {item}
-                                            </ProductType>
-                                        );
-                                    })
-                                }
-                                <Sorting />
-                                <Brands />
-                                <Tags />
-                            </ModalBody>
-                            <ModalFooter>
-                                <Button color="secondary" onClick={() => this.handleClose()}>Close</Button>
-                            </ModalFooter>
-                        </Modal>
-                </MobileCol>
-                <MobileCol sm="12">
-                    <StyledRow>
-                        <CardsContainer>{this.getItemList()}</CardsContainer>
-                    </StyledRow>
-                    <Row>
-                        <Pagination
-                            basePath="/"
-                            currentPage={currentPage}
-                            totalPageNum={Math.ceil(this.props.items.length / 16)}
-                            pageSize={16} 
-                        />
-                    </Row>
-                </MobileCol>
+                {/* WEB VIEW */}
+                <WebCol md="3">{this.getFilters()}</WebCol>
+                <WebCol md="6" sm="12">{this.getWebProductContent()}</WebCol>
+                <WebCol md="3"><Cart /></WebCol>
+
+                {/* MOBILE VIEW */}
+                <MobileCol sm="12">{this.getFilterModal()}</MobileCol>
+                <MobileCol sm="12">{this.getMobProductContent()}</MobileCol>
             </RowWithMargin>
         );
     }
@@ -303,13 +221,17 @@ class Home extends Component {
 
 const mapStateToProps = (state)=>{
     return {
-        items: state.items
+        items: state.items,
+        productType: state.productType,
+        sortingId: state.sortingId,
+        brands: state.brands,
+        tags: state.tags
     }
 }
 
 const mapDispatchToProps= (dispatch)=>{
     return{
-        addToCart: (id)=>{dispatch(addToCart(id))}
+        addItems: (data) => { dispatch(addItems(data)) }
     }
 }
 
