@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from "prop-types";
 import ReactPaginate from 'react-paginate';
 import styled from 'styled-components';
 import { Row, Col } from '@bootstrap-styled/v4';
@@ -193,5 +194,12 @@ const Pagination = (props) => {
         </Row>
     );
 }
+
+Pagination.propTypes = {
+    count: PropTypes.number,
+    marginPages: PropTypes.number,
+    pageRange: PropTypes.number,
+    pageChangeHandler: PropTypes.func
+};
 
 export default Pagination;

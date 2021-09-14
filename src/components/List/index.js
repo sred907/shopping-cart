@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { Row, Col, Button } from '@bootstrap-styled/v4';
@@ -155,6 +156,13 @@ const List = (props) => {
         </CardsContainer>
     );
 };
+
+List.propTypes = {
+    offset: PropTypes.number,
+    items: PropTypes.array,
+    loading: PropTypes.bool
+};
+
 
 const mapDispatchToProps= (dispatch)=>{
     return{

@@ -181,7 +181,7 @@ class Home extends Component {
             <>
             <ProductTypes />
             <StyledRow>
-                <List offset={this.state.offset} items={this.props.items} addToCart={this.props.addToCart} loading={this.state.loading}/>
+                <List offset={this.state.offset} items={this.props.items} loading={this.state.loading}/>
             </StyledRow>
             {this.props.items.length ? <Pagination
                 count={Math.ceil(this.props.items.length / PAGE_LIMIT)}
@@ -197,7 +197,7 @@ class Home extends Component {
         return (
             <>
             <StyledRow>
-                <List offset={this.state.offset} items={this.props.items} addToCart={this.props.addToCart} loading={this.state.loading}/>
+                <List offset={this.state.offset} items={this.props.items} loading={this.state.loading}/>
             </StyledRow>
             {this.props.items.length ? <Pagination
                 count={Math.ceil(this.props.items.length / PAGE_LIMIT)}
