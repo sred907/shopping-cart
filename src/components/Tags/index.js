@@ -2,6 +2,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 
+import Freeze from "../Freeze";
+
 import { setTags } from '../../actions/cartActions';
 
 const TagsContainer = styled.div`
@@ -138,11 +140,15 @@ class Tags extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            options: []
+            options: [],
+            loading: false
         }
     }
 
     componentDidMount() {
+        this.setState({
+            loading: true
+        })
         this.getOptions();
     }
 
@@ -158,12 +164,12 @@ class Tags extends React.Component {
             ...data
         ];
         this.setState({
-            options: [...this.options]
+            options: [...this.options],
+            loading: false
         });
     }
 
     updateChecks = (index, tag) => {
-        console.log("tag ", index, tag);
         const { options } = this.state;
         const { tags } = this.props;
         let arr = [...tags];
@@ -187,7 +193,7 @@ class Tags extends React.Component {
             return (option.toLowerCase()).indexOf(value.toLowerCase()) > -1
         });
         this.setState({
-            options: arr.length ? [...arr] : [...this.options]
+            options: arr.length ? [...arr] : []
         })
     }
 
@@ -201,7 +207,10 @@ class Tags extends React.Component {
     }
 
     render() {
-        const { options } = this.state;
+        const { options, loading } = this.state;
+        if (loading) {
+            return <Freeze />;
+        }
         return (
             <div>
                 <Heading>Tags</Heading>
@@ -210,30 +219,36 @@ class Tags extends React.Component {
                         placeholder="Search Tag"
                         className="searchBox"
                         onChange={(e) => this.updateResult(e)}
+                        type="search"
                     />
-                    <ListContainer>
-                        {
-                            options.map((tag, i) => {
-                                return (
-                                    <ListItem key={i}>
-                                        <label>
-                                            {tag}
-                                            <input
-                                            type="checkbox"
-                                            onChange={(e) => {
-                                                this.updateChecks(i, tag);
-                                            }}
-                                            checked={this.getStatus(tag)}
-                                            name={tag}
-                                            value={tag}
-                                            />
-                                            <span className="checkmark"></span>
-                                        </label>
-                                    </ListItem>
-                                );
-                            })
-                        }
-                    </ListContainer>
+                    {
+                        options.length ?
+                        <ListContainer>
+                            {
+                                options.map((tag, i) => {
+                                    return (
+                                        <ListItem key={i}>
+                                            <label>
+                                                {tag}
+                                                <input
+                                                type="checkbox"
+                                                onChange={(e) => {
+                                                    this.updateChecks(i, tag);
+                                                }}
+                                                checked={this.getStatus(tag)}
+                                                name={tag}
+                                                value={tag}
+                                                />
+                                                <span className="checkmark"></span>
+                                            </label>
+                                        </ListItem>
+                                    );
+                                })
+                            }
+                        </ListContainer>
+                        :
+                        "No Tags found"
+                    }
                 </TagsContainer>
             </div>
         );

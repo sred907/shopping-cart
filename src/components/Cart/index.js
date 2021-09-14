@@ -50,7 +50,7 @@ const Quantity = styled.div`
     padding: 12px;
     background: #1EA4CE;
     display: inline-block;
-    margin: 0 12px;
+    margin: 0 8px;
 `;
 
 const Text = styled.div`

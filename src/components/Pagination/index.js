@@ -19,14 +19,14 @@ const PaginationCont = styled.div`
         background: transparent;
         border-radius: 2px;
         display: inline-block;
-        font-size: 16px;
+        font-size: 15px;
         font-weight: normal;
         line-height: 2;
         letter-spacing: normal;
         text-align: center;
         color: #697488;
-        width: 30px;
-        height: 30px;
+        width: 28px;
+        height: 28px;
         cursor: pointer;
 
         &.active {
@@ -38,7 +38,7 @@ const PaginationCont = styled.div`
         }
 
         &.previous {
-            margin: 0 30px 0 4px;
+            margin: 0 20px 0 4px;
 
             @media(max-width: 1199px) {
                 width: 0;
@@ -48,7 +48,7 @@ const PaginationCont = styled.div`
 
         &.next {
             color: #697488;
-            margin: 0 4px 0 30px;
+            margin: 0 4px 0 20px;
 
             @media(max-width: 1199px) {
                 width: 0;

@@ -100,7 +100,7 @@ class Navbar extends React.Component {
                                 <Cart />
                             </ModalBody>
                             <ModalFooter>
-                                <Button color="secondary" onClick={() => this.handleClose()}>Close</Button>
+                                <Button color="info" size="lg" block onClick={() => this.handleClose()}>Close</Button>
                             </ModalFooter>
                         </Modal>
                     </MobileCol>

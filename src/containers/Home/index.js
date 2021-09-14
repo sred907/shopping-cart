@@ -164,7 +164,7 @@ class Home extends Component {
                     {this.getFilters()}
                 </ModalBody>
                 <ModalFooter>
-                    <Button color="secondary" onClick={() => this.handleClose()}>Apply</Button>
+                    <Button color="info" size="lg" block onClick={() => this.handleClose()}>Apply</Button>
                 </ModalFooter>
             </Modal>
             </>

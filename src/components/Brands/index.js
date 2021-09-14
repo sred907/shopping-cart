@@ -2,6 +2,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 
+import Freeze from "../Freeze";
+
 import { setBrands } from "../../actions/cartActions";
 
 const BrandsContainer = styled.div`
@@ -142,11 +144,15 @@ class Brands extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            options: []
+            options: [],
+            loading: false
         }
     }
 
     componentDidMount() {
+        this.setState({
+            loading: true
+        })
         this.getOptions();
     }
 
@@ -165,7 +171,8 @@ class Brands extends React.Component {
             ...data
         ];
         this.setState({
-            options: [...this.options]
+            options: [...this.options],
+            loading: false
         });
 
     }
@@ -194,7 +201,7 @@ class Brands extends React.Component {
             return (option.name.toLowerCase()).indexOf(value.toLowerCase()) > -1
         });
         this.setState({
-            options: arr.length ? [...arr] : [...this.options]
+            options: arr.length ? [...arr] : []
         })
     }
 
@@ -208,7 +215,10 @@ class Brands extends React.Component {
     }
 
     render() {
-        const { options } = this.state;
+        const { options, loading } = this.state;
+        if (loading) {
+            return <Freeze />;
+        }
         return (
             <div>
                 <Heading>Brands</Heading>
@@ -217,30 +227,36 @@ class Brands extends React.Component {
                         placeholder="Search Brand"
                         className="searchBox"
                         onChange={(e) => this.updateResult(e)}
+                        type="search"
                     />
-                    <ListContainer>
-                        {
-                            options.map((option, i) => {
-                                return (
-                                    <ListItem key={i}>
-                                        <label>
-                                            {option.name}
-                                            <input
-                                                type="checkbox"
-                                                onChange={(e) => {
-                                                    this.updateChecks(i, option.name);
-                                                }}
-                                                checked={this.getStatus(option)}
-                                                name={option.name}
-                                                value={option.slug}
-                                            />
-                                            <span className="checkmark"></span>
-                                        </label>
-                                    </ListItem>
-                                );
-                            })
-                        }
-                    </ListContainer>
+                    {
+                        options.length ?
+                        <ListContainer>
+                            {
+                                options.map((option, i) => {
+                                    return (
+                                        <ListItem key={i}>
+                                            <label>
+                                                {option.name}
+                                                <input
+                                                    type="checkbox"
+                                                    onChange={(e) => {
+                                                        this.updateChecks(i, option.name);
+                                                    }}
+                                                    checked={this.getStatus(option)}
+                                                    name={option.name}
+                                                    value={option.slug}
+                                                />
+                                                <span className="checkmark"></span>
+                                            </label>
+                                        </ListItem>
+                                    );
+                                })
+                            }
+                        </ListContainer>
+                        :
+                        "No Brands found!"
+                    }
                 </BrandsContainer>
             </div>
         );
