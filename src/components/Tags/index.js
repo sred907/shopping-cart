@@ -162,11 +162,12 @@ class Tags extends React.Component {
         });
     }
 
-    updateChecks = (index) => {
+    updateChecks = (index, tag) => {
+        console.log("tag ", index, tag);
         const { options } = this.state;
         const { tags } = this.props;
         let arr = [...tags];
-        if (index === 0) {
+        if (tag === "All") {
             arr = tags[0] === "All" ? [] : ["All"];
         } else {
             if(arr.indexOf("All") > -1) arr.splice(arr.indexOf("All"), 1);
@@ -220,7 +221,7 @@ class Tags extends React.Component {
                                             <input
                                             type="checkbox"
                                             onChange={(e) => {
-                                                this.updateChecks(i);
+                                                this.updateChecks(i, tag);
                                             }}
                                             checked={this.getStatus(tag)}
                                             name={tag}

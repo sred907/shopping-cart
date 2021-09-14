@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {BrowserRouter, Route, Switch} from 'react-router-dom'
-import Navbar from './components/Navbar'
-import Home from './components/Home'
+import Navbar from './containers/Navbar';
+import Home from './containers/Home';
 
 class App extends Component {
   render() {

@@ -4,15 +4,15 @@ import {isEqual} from "lodash";
 import styled from 'styled-components';
 import { Row, Col, Modal, ModalBody, ModalFooter, Button } from '@bootstrap-styled/v4';
 
-import Cart from '../Cart';
-import Sorting from "../Sorting";
-import Brands from "../Brands";
-import Tags from "../Tags";
-import Pagination from "../Pagination";
-import ProductTypes from "../ProductTypes";
-import List from "../List";
+import Cart from '../../components/Cart';
+import Sorting from "../../components/Sorting";
+import Brands from "../../components/Brands";
+import Tags from "../../components/Tags";
+import Pagination from "../../components/Pagination";
+import ProductTypes from "../../components/ProductTypes";
+import List from "../../components/List";
 
-import { addItems } from '../../actions/cartActions'
+import { addItems } from '../../actions/cartActions';
 import { SORTING_LIST, PAGE_LIMIT } from "../../constants";
 
 const StyledRow = styled(Row)`
@@ -84,12 +84,7 @@ class Home extends Component {
         let currTags = this.props.tags;
 
         if ((!isEqual(prevSort, currSort)) || (!isEqual(prevProdType, currProdType)) || (!isEqual(prevBrands, currBrands)) || (!isEqual(prevTags, currTags))) {
-            this.setState({loading: true});
-            if (this.state.offset !== 1) {
-                this.setState({
-                    offset: 1
-                })
-            }
+            this.setState({loading: true, offset: 1});
             this.loadItemsFromServer(0, false);
         }
     }
@@ -188,6 +183,7 @@ class Home extends Component {
                 marginPages={4}
                 pageRange={3}
                 pageChangeHandler={this.handlePageClick}
+                forcePage={this.state.offset}
             /> : null}
             </>
         );
@@ -204,6 +200,7 @@ class Home extends Component {
                 marginPages={3}
                 pageRange={1}
                 pageChangeHandler={this.handlePageClick}
+                forcePage={this.state.offset}
             /> : null}
             </>
         );

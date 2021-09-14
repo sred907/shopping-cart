@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { Row, Col, Modal, ModalBody, ModalFooter, Button } from '@bootstrap-styled/v4';
 
-import Cart from '../Cart';
+import Cart from '../../components/Cart';
 
 const StyledContainer = styled.div`
     background: #1EA4CE;

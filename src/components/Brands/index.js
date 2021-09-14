@@ -170,11 +170,11 @@ class Brands extends React.Component {
 
     }
 
-    updateChecks = (index) => {
+    updateChecks = (index, brandName) => {
         const { options } = this.state;
         const { brands } = this.props;
         let arr = [...brands];
-        if (index === 0) {
+        if (brandName === "All") {
             arr = brands[0] === "All" ? [] : ["All"]
         } else {
             if(arr.indexOf("All") > -1) arr.splice(arr.indexOf("All"), 1);
@@ -228,7 +228,7 @@ class Brands extends React.Component {
                                             <input
                                                 type="checkbox"
                                                 onChange={(e) => {
-                                                    this.updateChecks(i);
+                                                    this.updateChecks(i, option.name);
                                                 }}
                                                 checked={this.getStatus(option)}
                                                 name={option.name}

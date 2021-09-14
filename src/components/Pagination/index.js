@@ -140,7 +140,7 @@ const MobileCol = styled(Col)`
 `;
 
 const Pagination = (props) => {
-    let {count, marginPages, pageRange, pageChangeHandler} = props;
+    let {count, marginPages, pageRange, pageChangeHandler, forcePage} = props;
     return (
         <Row>
             <WebCol md="12">
@@ -164,6 +164,7 @@ const Pagination = (props) => {
                         onPageChange={pageChangeHandler}
                         containerClassName={'pagination'}
                         activeClassName={'active'}
+                        forcePage={forcePage - 1}
                     />
                 </PaginationCont>
             </WebCol>
@@ -188,6 +189,7 @@ const Pagination = (props) => {
                         onPageChange={pageChangeHandler}
                         containerClassName={'pagination'}
                         activeClassName={'active'}
+                        forcePage={forcePage - 1}
                     />
                 </PaginationCont>
             </MobileCol>
@@ -199,7 +201,8 @@ Pagination.propTypes = {
     count: PropTypes.number,
     marginPages: PropTypes.number,
     pageRange: PropTypes.number,
-    pageChangeHandler: PropTypes.func
+    pageChangeHandler: PropTypes.func,
+    forcePage: PropTypes.number
 };
 
 export default Pagination;
