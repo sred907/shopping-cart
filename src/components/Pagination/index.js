@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from "prop-types";
 import ReactPaginate from 'react-paginate';
 import styled from 'styled-components';
-import { Row, Col } from '@bootstrap-styled/v4';
+import { Row } from '@bootstrap-styled/v4';
 
 import {WebCol, MobileCol} from "../../commonStyles";
 

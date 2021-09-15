@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import {isEqual} from "lodash";
 import styled from 'styled-components';
-import { Row, Col, Modal, ModalBody, ModalFooter, Button } from '@bootstrap-styled/v4';
+import { Row, Modal, ModalBody, ModalFooter, Button } from '@bootstrap-styled/v4';
 
 import Cart from '../../components/Cart';
 import Sorting from "../../components/Sorting";
