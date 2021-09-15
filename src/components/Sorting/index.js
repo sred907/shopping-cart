@@ -4,23 +4,7 @@ import styled from 'styled-components';
 
 import { setSortingId } from '../../actions/cartActions'
 import { SORTING_LIST } from "../../constants";
-
-const SortingContainer = styled.div`
-    background: #FFFFFF;
-    box-shadow: 0px 6px 24px rgba(93, 62, 188, 0.04);
-    border-radius: 2px;
-    padding: 24px;
-`;
-
-const Heading = styled.div`
-    font-weight: 600;
-    font-size: 13px;
-    line-height: 18px;
-    display: flex;
-    align-items: center;
-    color: #697488;
-    margin-bottom: 12px;
-`;
+import {FiltersContainer, FilterHeading} from "../../commonStyles";
 
 const ListItem = styled.div`
     font-size: 14px;
@@ -96,8 +80,8 @@ const ListItem = styled.div`
 const Sorting = (props) => {
     return (
         <div>
-            <Heading>Sorting</Heading>
-            <SortingContainer>
+            <FilterHeading>Sorting</FilterHeading>
+            <FiltersContainer>
                 {
                     SORTING_LIST.map((item, i) => {
                         return (
@@ -117,7 +101,7 @@ const Sorting = (props) => {
                         );
                     })
                 }
-            </SortingContainer>
+            </FiltersContainer>
         </div>
     );
 }

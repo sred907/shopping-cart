@@ -14,26 +14,13 @@ import List from "../../components/List";
 
 import { addItems } from '../../actions/cartActions';
 import { SORTING_LIST, PAGE_LIMIT } from "../../constants";
+import {WebCol, MobileCol} from "../../commonStyles";
 
 const StyledRow = styled(Row)`
     background: #fff;
     box-shadow: 0px 4px 24px rgba(93, 62, 188, 0.04);
     border-radius: 2px;
     padding: 0 15px;
-`;
-
-const WebCol = styled(Col)`
-    @media(max-width: 1199px) {
-        display: none;
-    }
-`;
-
-const MobileCol = styled(Col)`
-    display: none;
-
-    @media(max-width: 1199px) {
-        display: block;
-    }
 `;
 
 const RowWithMargin = styled(Row)`

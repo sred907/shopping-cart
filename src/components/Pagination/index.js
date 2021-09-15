@@ -4,6 +4,8 @@ import ReactPaginate from 'react-paginate';
 import styled from 'styled-components';
 import { Row, Col } from '@bootstrap-styled/v4';
 
+import {WebCol, MobileCol} from "../../commonStyles";
+
 
 const PaginationCont = styled.div`
     ul {
@@ -122,20 +124,6 @@ const List = styled.div`
         a {
             color: #fff;
         }
-    }
-`;
-
-const WebCol = styled(Col)`
-    @media(max-width: 1199px) {
-        display: none;
-    }
-`;
-
-const MobileCol = styled(Col)`
-    display: none;
-
-    @media(max-width: 1199px) {
-        display: block;
     }
 `;
 

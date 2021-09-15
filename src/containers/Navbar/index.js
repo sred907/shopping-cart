@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { Row, Col, Modal, ModalBody, ModalFooter, Button } from '@bootstrap-styled/v4';
 
 import Cart from '../../components/Cart';
+import {WebCol, MobileCol} from "../../commonStyles";
 
 const StyledContainer = styled.div`
     background: #1EA4CE;
@@ -37,21 +38,6 @@ const RowWithMargin = styled(Row)`
 
     @media(max-width: 1199px) {
         margin: 0 !important;
-    }
-`;
-
-const WebCol = styled(Col)`
-    @media(max-width: 1199px) {
-        display: none;
-    }
-`;
-
-const MobileCol = styled(Col)`
-    display: none;
-
-    @media(max-width: 1199px) {
-        display: block;
-        padding: 0 !important;
     }
 `;
 
@@ -92,7 +78,7 @@ class Navbar extends React.Component {
                     <WebCol md="4">
                         <Total>{this.props.total ? `₺ ${Math.round(this.props.total * 100)/100}` : "₺ 0,00"}</Total>
                     </WebCol>
-                    <MobileCol sm="12">
+                    <MobileCol sm="12" style={{padding: 0}}>
                         <Market>Market</Market>
                         <Total onClick={() => this.handleClose()}>{this.props.total ? `₺ ${Math.round(this.props.total * 100)/100}` : "₺ 0,00"}</Total>
                         <Modal isOpen={this.state.isOpen} toggle={() => this.handleClose()}>

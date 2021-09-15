@@ -17,6 +17,7 @@ const List = styled.div`
     text-align: center;
     padding: 22px 26px 0;
 `;
+
 const Title = styled.div`
     font-size: 14px;
     line-height: 18px;
@@ -24,6 +25,7 @@ const Title = styled.div`
     color: #191919;
     text-align: left;
 `;
+
 const Price = styled.div`
     font-weight: 600;
     font-size: 14px;

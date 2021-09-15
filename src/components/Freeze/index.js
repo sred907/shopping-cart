@@ -1,5 +1,6 @@
 import React from "react";
 import styled from 'styled-components';
+import PropTypes from "prop-types";
 
 const FreezeCont = styled.div`
     padding: 100px;
@@ -12,20 +13,29 @@ const FreezeCont = styled.div`
         width: 60px;
         height: 60px;
         animation: spin 2s linear infinite;
+        margin: 0 auto;
     }
 
     @keyframes spin {
         0% { transform: rotate(0deg); }
         100% { transform: rotate(360deg); }
     }
+
+    &.padding40 {
+        padding: 40px;
+    }
 `;
 
 const Freeze = (props) => {
     return (
-        <FreezeCont>
+        <FreezeCont className={props.customClass}>
                 <div className="loader"></div>
         </FreezeCont>
     );
 }
+
+Freeze.propTypes = {
+    customClass: PropTypes.string
+};
 
 export default Freeze;
