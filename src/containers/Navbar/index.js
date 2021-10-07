@@ -65,7 +65,7 @@ class Navbar extends React.Component {
         }
     }
 
-    handleClose = () => this.setState((state) => { isOpen: !state.isOpen });
+    handleClose = () => this.setState({ isOpen: !this.state.isOpen });
 
     render() {
         return (
