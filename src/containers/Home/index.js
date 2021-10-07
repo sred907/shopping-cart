@@ -76,7 +76,7 @@ class Home extends Component {
         }
     }
 
-    handleClose = () => this.setState({ isOpen: !this.state.isOpen });
+    handleClose = () => this.setState((state) => { isOpen: !state.isOpen });
 
     handlePageClick = (data) => {
         let selected = data.selected + 1;

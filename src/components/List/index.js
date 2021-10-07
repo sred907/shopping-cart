@@ -17,7 +17,7 @@ const CardsContainer = styled.div`
 
 const Card = styled.div`
     margin-bottom: 24px;
-    width: 136px;
+    width: 134px;
 
     .card-content {
         min-height: 100px;
